@@ -11,6 +11,7 @@ const products: Product[] = [
     size: "M",
     color: "Blue",
     amount: 8,
+    prize: 7500,
     min_amount: 10,
   }),
   Product.create({
@@ -19,6 +20,7 @@ const products: Product[] = [
       size: "L",
       color: "Black",
       amount: 30,
+      prize: 5500,
       min_amount: 5,
   }),
   Product.create({
@@ -27,6 +29,7 @@ const products: Product[] = [
     size: "XL",
     color: "Gray",
     amount: 20,
+    prize: 3500,
     min_amount: 8,
   }),
   Product.create({
@@ -35,6 +38,7 @@ const products: Product[] = [
     size: "42",
     color: "White",
     amount: 15,
+    prize: 6500,
     min_amount: 3,
   }),
 ];
@@ -66,7 +70,6 @@ describe("Low stock product", () => {
 
   it("should be able to find product with min quantity is greater than amount in stock", async () => {
     const { product } = await sut.execute({ id: new UniqueEntityId("1") })
-    console.log(product)
     expect(product).toEqual(expect.objectContaining(
       {
         props: expect.objectContaining({
@@ -75,6 +78,7 @@ describe("Low stock product", () => {
           size: "M",
           color: "Blue",
           amount: 8,
+          prize: 7500,
           min_amount: 10,
           created_at: expect.any(Date),
           updated_at: expect.any(Date),

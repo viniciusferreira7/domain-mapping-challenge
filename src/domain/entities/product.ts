@@ -8,6 +8,7 @@ interface ProductProps {
   size: string
   color: string
   amount: number
+  prize: number
   min_amount: number
   created_at: Date
   updated_at?: Date
@@ -28,6 +29,10 @@ export class Product extends Entity<ProductProps> {
 
   get amount() {
     return this.props.amount;
+  }
+
+  get prize(){
+    return this.props.prize
   }
 
   get min_amount() {
