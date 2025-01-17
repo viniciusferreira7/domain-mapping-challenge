@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import type { Status } from './value-object/status'
+import { Entity } from '@/core/entities/entity'
 
 interface SaleProps {
   id?: string
@@ -12,24 +13,6 @@ interface SaleProps {
   updated_at: Date
 }
 
-export class Sale {
-  public id: string
-  public name: string
-  public productId: string
-  public customerId: string
-  public amount: number
-  public status: Status
-  public created_at: Date
-  public updated_at: Date
-
-  constructor(props: SaleProps){
-    this.id = props.id ?? randomUUID()
-    this.name = props.name
-    this.productId = props.productId
-    this.customerId = props.customerId
-    this.amount = props.amount
-    this.status = props.status
-    this.created_at = props.created_at
-    this.updated_at = props.updated_at
-  }
+export class Sale extends Entity<SaleProps> {
+ 
 }

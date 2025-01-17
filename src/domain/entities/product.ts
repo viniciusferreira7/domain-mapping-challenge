@@ -1,7 +1,9 @@
-import { randomUUID } from 'node:crypto'
+import { Entity } from '@/core/entities/entity'
+import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id'
+import type { Optional } from '@/core/types/optional'
 
 interface ProductProps {
-  id?: string
+  id?: UniqueEntityId
   name: string
   size: string
   color: string
@@ -11,25 +13,44 @@ interface ProductProps {
   updated_at?: Date
 }
 
-export class Product {
-  public id: string
-  public name: string
-  public size: string
-  public color: string
-  public amount: number
-  public min_amount: number
-  public created_at: Date
-  public updated_at?: Date
-
-  constructor(props: ProductProps){
-    this.id = props.id ?? randomUUID()
-    this.name = props.name
-    this.size = props.size
-    this.color = props.color
-    this.amount = props.amount
-    this.min_amount = props.min_amount
-    this.created_at = props.created_at
-    this.updated_at = props.updated_at
+export class Product extends Entity<ProductProps> {
+  get name() {
+    return this.props.name;
   }
 
+  get size() {
+    return this.props.size;
+  }
+
+  get color() {
+    return this.props.color;
+  }
+
+  get amount() {
+    return this.props.amount;
+  }
+
+  get min_amount() {
+    return this.props.min_amount;
+  }
+
+  get created_at() {
+    return this.props.created_at;
+  }
+
+  get updated_at() {
+    return this.props.updated_at;
+  }
+
+  static create(props: Optional<ProductProps, "id" | "created_at" | "updated_at">){
+    const product = new Product({
+      ...props,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    props.id
+  )
+
+    return product
+  }
 }

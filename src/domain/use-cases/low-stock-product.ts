@@ -1,9 +1,10 @@
+import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { Product } from '../entities/product';
 import { ResourceNotFound } from '../error/resource-not-found';
 import type { ProductRepository } from '../repositories/product-repository';
 
 interface LowStockProductUseCaseRequest {
-  id: string
+  id: UniqueEntityId
 }
 
 interface LowStockProductUseCaseResponse {
