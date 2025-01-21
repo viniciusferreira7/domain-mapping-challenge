@@ -1,7 +1,7 @@
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { Product } from '../entities/product';
 import { ResourceNotFound } from '../error/resource-not-found';
-import type { ProductRepository } from '../repositories/product-repository';
+import { InMemoryProductsRepository } from '../repositories/in-memory/in-memory-products-repository';
 import { LowStockProductUseCase } from './low-stock-product';
 
 const products: Product[] = [
@@ -43,29 +43,14 @@ const products: Product[] = [
   }),
 ];
 
-
-const fakeRepository: ProductRepository = {
-  create: async (product: Product) => {
-    return product
-  },
-  get: async (productId: UniqueEntityId) => {
-    const product = products.find((item) => {
-      return item.id.toString === productId.toString
-    })
-
-    if(!product){
-      return null
-    }
-
-    return product
-  }
-}
+let inMemoryProductsRepository: InMemoryProductsRepository
 
 let sut: LowStockProductUseCase
 
 describe("Low stock product", () => {
   beforeEach(() => {
-    sut = new LowStockProductUseCase(fakeRepository)
+    inMemoryProductsRepository = new InMemoryProductsRepository(products)
+    sut = new LowStockProductUseCase(inMemoryProductsRepository)
   })
 
   it("should be able to find product with min quantity is greater than amount in stock", async () => {

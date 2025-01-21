@@ -5,24 +5,13 @@ import { Sale } from '../entities/sale';
 import { Status } from '../entities/value-object/status';
 import type { SalesRepository } from '../repositories/sales-repository';
 import { ProductsSoldUseCase } from './products-sold';
+import { InMemorySalesRepository } from '../repositories/in-memory/in-memory-sales-repository';
 
 let products: Product[]
 
 let sales: Sale[] = []
 
-const fakeRepository: SalesRepository = {
-  get: async (date: string, status = "delivered") => {
-    const deliveredSales = sales.filter((item) => {
-      const isDeliveredStatus = item.status.value === status
-      const isSameDate = dayjs(item.createdAt).isSame(dayjs(date), "date")
-
-      return isDeliveredStatus && isSameDate
-    })
-
-    return deliveredSales
-    
-  }
-}
+let inMemorySalesRepository: InMemorySalesRepository
 
 let sut: ProductsSoldUseCase
 
@@ -153,8 +142,9 @@ describe("Products sold", () => {
      }),
     )
 
-
-    sut = new ProductsSoldUseCase(fakeRepository)
+    inMemorySalesRepository = new InMemorySalesRepository(sales, products)
+    
+    sut = new ProductsSoldUseCase(inMemorySalesRepository)
 
   })
 
