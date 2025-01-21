@@ -14,7 +14,7 @@ interface ProductsSoldUseCaseResponse {
 export class ProductsSoldUseCase {
   constructor(private salesRepository: SalesRepository){}
 
-  async execute({date}: ProductsSoldUseCaseRequest): Promise<ProductsSoldUseCaseResponse>{
+  async execute({ date }: ProductsSoldUseCaseRequest): Promise<ProductsSoldUseCaseResponse>{
     const sales = await this.salesRepository.get(date, "delivered")
 
     const amount = sales.reduce((acc, current) => acc + current.amount, 0)

@@ -1,21 +1,20 @@
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
+import dayjs from 'dayjs';
 import { Product } from '../entities/product';
 import { Sale } from '../entities/sale';
-import type { SalesRepository } from '../repositories/sales-repository';
 import { Status } from '../entities/value-object/status';
-import dayjs from 'dayjs';
+import type { SalesRepository } from '../repositories/sales-repository';
 import { ProductsSoldUseCase } from './products-sold';
 
 let products: Product[]
 
-let sales: Sale[] 
+let sales: Sale[] = []
 
 const fakeRepository: SalesRepository = {
   get: async (date: string, status = "delivered") => {
     const deliveredSales = sales.filter((item) => {
       const isDeliveredStatus = item.status.value === status
       const isSameDate = dayjs(item.createdAt).isSame(dayjs(date), "date")
-      console.log({isDeliveredStatus, isSameDate, item: item.name, createdAt: item.createdAt})
 
       return isDeliveredStatus && isSameDate
     })
@@ -32,7 +31,6 @@ describe("Products sold", () => {
     vi.useFakeTimers()
 
     vi.setSystemTime(new Date(2000, 0, 5, 8, 0, 0))
-    vi.advanceTimersByTime(100 * 60 * 60 * 24 * 10)
 
 
      products = [
@@ -73,54 +71,69 @@ describe("Products sold", () => {
         min_amount: 3,
       }),
     ];
-    
-    sales = [
-     Sale.create({
+
+
+    sales.push( Sale.create({
       id: new UniqueEntityId("1"),
       name: "sale-1",
       amount: 10,
       productId: "1",
       customerId: "customer-1",
       status: new Status("delivered"),
-     }),
-     Sale.create({
+     }))
+
+    vi.setSystemTime(new Date(2000, 0, 6, 8, 0, 0))
+
+    sales.push(Sale.create({
       id: new UniqueEntityId("2"),
       name: "sale-2",
       amount: 2,
       productId: "1",
       customerId: "customer-2",
       status: new Status("canceled"),
-     }),
-     Sale.create({
+     }),)
+
+    vi.setSystemTime(new Date(2000, 0, 5, 8, 0, 0))
+
+    sales.push( Sale.create({
       id: new UniqueEntityId("3"),
       name: "sale-3",
       amount: 2,
       productId: "3",
       customerId: "customer-1",
       status: new Status("delivered"),
-     }),
-     Sale.create({
+     }),)
+
+    vi.setSystemTime(new Date(2000, 0, 6, 8, 0, 0))
+ 
+    sales.push(Sale.create({
       id: new UniqueEntityId("4"),
       name: "sale-4",
       amount: 12,
       productId: "2",
       customerId: "customer-3",
       status: new Status("delivered"),
-     }),
-     Sale.create({
+     }),)
+
+    vi.setSystemTime(new Date(2000, 0, 14, 8, 0, 0))
+ 
+    sales.push(Sale.create({
       id: new UniqueEntityId("5"),
       name: "sale-5",
       amount: 1,
       productId: "3",
       customerId: "customer-4",
       status: new Status("processing"),
-     }),
-     Sale.create({
-      id: new UniqueEntityId("5"),
-      name: "sale-5",
+     }),)
+
+     vi.setSystemTime(new Date(2000, 0, 6, 8, 0, 0)) 
+
+    sales.push( Sale.create({
+      id: new UniqueEntityId("6"),
+      name: "sale-6",
       amount: 8,
-      productId: "3",
-      customerId: "customer-5",
+      productId: "2",
+      customerId: "customer-6",
       status: new Status("delivered"),
      }),
      Sale.create({
@@ -131,10 +144,11 @@ describe("Products sold", () => {
       customerId: "customer-2",
       status: new Status("pending"),
      }),
-    ]
+    )
 
 
     sut = new ProductsSoldUseCase(fakeRepository)
+
   })
 
   afterEach(() => {
@@ -142,9 +156,21 @@ describe("Products sold", () => {
   })
 
   it("Should be able to get delivered sales and its amount", async () => {
-    const response = await sut.execute({ date: "2000-01-05" })
+    const expectedDate = "2000-01-05"
+    const { amount, sales } = await sut.execute({ date: expectedDate })
 
+    expect(amount).toEqual(sales.reduce((acc, current) => acc + current.amount, 0))
+    expect(sales.every(item => dayjs(item.createdAt).isSame(expectedDate, 'days'))).toBe(true)
 
-    console.log({response})
+  })
+
+  it("Should not be able to get delivered sales and its amount with wrong date", async () => {
+    const expectedDate = "2000-11-22"
+    const { amount, sales } = await sut.execute({ date: expectedDate })
+
+    console.log({amount, sales})
+
+    expect(amount).toEqual(0)
+    expect(sales).toHaveLength(0)
   })
 })
