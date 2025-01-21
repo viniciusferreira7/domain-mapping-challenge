@@ -168,7 +168,6 @@ describe("Products sold", () => {
     const expectedDate = "2000-11-22"
     const { amount, sales } = await sut.execute({ date: expectedDate })
 
-    console.log({amount, sales})
 
     expect(amount).toEqual(0)
     expect(sales).toHaveLength(0)
