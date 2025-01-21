@@ -65,8 +65,8 @@ describe("Low stock product", () => {
           amount: 8,
           prize: 7500,
           min_amount: 10,
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
           })
       },
     ))

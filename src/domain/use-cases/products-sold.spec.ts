@@ -3,9 +3,8 @@ import dayjs from 'dayjs';
 import { Product } from '../entities/product';
 import { Sale } from '../entities/sale';
 import { Status } from '../entities/value-object/status';
-import type { SalesRepository } from '../repositories/sales-repository';
-import { ProductsSoldUseCase } from './products-sold';
 import { InMemorySalesRepository } from '../repositories/in-memory/in-memory-sales-repository';
+import { ProductsSoldUseCase } from './products-sold';
 
 let products: Product[]
 
@@ -158,6 +157,7 @@ describe("Products sold", () => {
 
     expect(amount).toEqual(sales.reduce((acc, current) => acc + current.amount, 0))
     expect(sales.every(item => dayjs(item.createdAt).isSame(expectedDate, 'days'))).toBe(true)
+    expect(sales).toHaveLength(2)
 
   })
 

@@ -21,29 +21,30 @@ export class InMemorySalesRepository implements SalesRepository {
   
  async  fetchBestSellingProductsByPeriod(): Promise<{ [x: string]: Product; }> {
     const allPeriods = this.sales.reduce<string[]>((acc, current) => {
-           const salesDate = dayjs(current.createdAt).format("YYYY-MM-DD")
-   
-           if(!acc.includes(salesDate)){
-             acc.push(salesDate)
-           }
-   
-           return acc
-         }, [])
-   
-   
-         const bestSellingProductsByPeriod: Record<string, Product> = {}
-          allPeriods.forEach((item) => {
-           const productsByPeriod = this.products.filter((product) => dayjs(product.created_at).isSame(item, 'days'))
-   
-           const productsByPeriodSort = productsByPeriod.sort((a, b) => b.amount - a.amount)
-           const bestSellingProduct = productsByPeriodSort?.[0]
-   
-           if(bestSellingProduct){
-             bestSellingProductsByPeriod[item] = bestSellingProduct
-           }
-         })
-   
-         return bestSellingProductsByPeriod
+      const salesDate = dayjs(current.createdAt).format("YYYY-MM-DD")
+
+      if(!acc.includes(salesDate)){
+        acc.push(salesDate)
+      }
+
+      return acc
+    }, [])
+
+
+    let bestSellingProductsByPeriod: Record<string, Product> = {}
+    allPeriods.forEach((item) => {
+      const salesByPeriod = this.sales.filter((sale) => dayjs(sale.updatedAt).isSame(item, 'days'))
+
+      const productsByPeriodSort = salesByPeriod.sort((a, b) => b.amount - a.amount)
+      const bestSellingSale = productsByPeriodSort?.[0]
+      const product = this.products.find((prod) => prod.id.toString === bestSellingSale.productId)
+
+      if(product){
+        bestSellingProductsByPeriod[item] = product
+      }
+    })
+
+    return bestSellingProductsByPeriod
   }
 
 }

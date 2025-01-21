@@ -10,8 +10,8 @@ interface ProductProps {
   amount: number
   prize: number
   min_amount: number
-  created_at: Date
-  updated_at?: Date
+  createdAt: Date
+  updatedAt?: Date
 }
 
 export class Product extends Entity<ProductProps> {
@@ -39,19 +39,19 @@ export class Product extends Entity<ProductProps> {
     return this.props.min_amount;
   }
 
-  get created_at() {
-    return this.props.created_at;
+  get createdAt() {
+    return this.props.createdAt;
   }
 
-  get updated_at() {
-    return this.props.updated_at;
+  get updatedAt() {
+    return this.props.updatedAt;
   }
 
-  static create(props: Optional<ProductProps, "id" | "created_at" | "updated_at">){
+  static create(props: Optional<ProductProps, "id" | "createdAt" | "updatedAt">){
     const product = new Product({
       ...props,
-      created_at: new Date(),
-      updated_at: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     props.id
   )
