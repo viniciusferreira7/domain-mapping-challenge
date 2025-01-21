@@ -9,6 +9,7 @@ interface SaleProps {
   productId: string
   customerId: string
   amount: number
+  profit: number
   status: Status
   created_at: Date
   updated_at: Date
@@ -29,6 +30,10 @@ export class Sale extends Entity<SaleProps> {
 
   get amount(): number {
     return this.props.amount;
+  }
+
+  get profit(): number {
+    return this.props.profit;
   }
 
   get status(): Status {

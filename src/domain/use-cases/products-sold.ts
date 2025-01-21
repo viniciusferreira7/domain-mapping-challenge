@@ -19,6 +19,6 @@ export class ProductsSoldUseCase {
 
     const amount = sales.reduce((acc, current) => acc + current.amount, 0)
 
-    return { amount, sales }
+    return { amount, sales, }
   }
 }
