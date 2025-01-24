@@ -1,14 +1,12 @@
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
-import dayjs from 'dayjs';
+import { afterEach } from 'vitest';
 import { Product } from '../entities/product';
 import { Sale } from '../entities/sale';
 import { Status } from '../entities/value-object/status';
-import type { SalesRepository } from '../repositories/sales-repository';
 import { InMemorySalesRepository } from '../repositories/in-memory/in-memory-sales-repository';
-import  { GetTopSellingProductsByPeriodUseCase } from './get-top-selling-products-by-period';
-import { afterEach } from 'vitest';
+import { GetTopSellingProductsByPeriodUseCase } from './get-top-selling-products-by-period';
 
-let products: Product[]
+let products: Product[] = []
 
 let sales: Sale[] = []
 

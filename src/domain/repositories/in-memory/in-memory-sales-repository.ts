@@ -1,12 +1,28 @@
 import type { Product } from '@/domain/entities/product';
-import type { Sale } from '@/domain/entities/sale';
-import type { StatusType } from '@/domain/entities/value-object/status';
+import { Sale } from '@/domain/entities/sale';
+import { Status, type StatusType } from '@/domain/entities/value-object/status';
 import type { SalesRepository } from '../sales-repository';
 import dayjs from 'dayjs';
+import type { Optional } from '@/core/types/optional';
 
 export class InMemorySalesRepository implements SalesRepository {
 
-  constructor( public sales: Sale[],  public products: Product[]){}
+  constructor(public sales: Sale[],  public products: Product[]){}
+
+ async create(params: Optional<Sale, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Promise<Sale> {
+    const sale =  Sale.create({
+      name: params.name,
+      productId: params.productId,
+      customerId: params.customerId,
+      amount: params.amount,
+      profit: params.profit,
+      status: new Status('pending')
+    })
+
+    this.sales.push(sale)
+
+    return sale
+  }
 
   async get(date: string, status: StatusType): Promise<Sale[]> {
      const deliveredSales = this.sales.filter((item) => {
