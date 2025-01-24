@@ -23,6 +23,20 @@ export class InMemorySalesRepository implements SalesRepository {
 
 constructor(public sales: Sale[],  public products: Product[]){}
 
+  async deleteById(saleId: UniqueEntityId): Promise<Sale | null> {
+   const saleIndex =  this.sales.findIndex((sale) => sale.id.toString === saleId.toString)
+
+   if(saleIndex >= 0){
+    const deletedSale = this.sales[saleIndex]
+
+    this.sales.splice(saleIndex, 1)
+
+    return deletedSale || null
+   }
+
+   return null
+  }
+
  async update(params: UpdateSaleParams): Promise<Sale | null> {
   let updatedSaleIndex = this.sales.findIndex((sale) => sale.id.toString === params.saleId)
 

@@ -21,6 +21,7 @@ type CreateParams = Optional<Sale, 'id' | 'createdAt' | 'updatedAt' | 'status'>
 
 type FetchAndProductsResponse = Record<string, Product>
 export interface SalesRepository {
+  deleteById(id: UniqueEntityId): Promise<Sale | null>
   update(params: UpdateSaleParams): Promise<Sale | null>
   create(params: CreateParams): Promise<Sale>
   get(date: string, status: StatusType): Promise<Sale[]> 
