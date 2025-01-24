@@ -1,10 +1,10 @@
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Sale } from '../entities/sale';
+import { Status, type StatusType } from '../entities/value-object/status';
 import { InvalidSale } from '../error/invalid-sale';
 import { ResourceNotFound } from '../error/resource-not-found';
 import type { ProductRepository } from '../repositories/product-repository';
 import type { SalesRepository } from '../repositories/sales-repository';
-import { Status, type StatusType } from '../entities/value-object/status';
 
 interface UpdateSaleUseCaseRequest {
   saleId: string
@@ -44,6 +44,10 @@ export class UpdateSale {
       throw new ResourceNotFound()
     }
 
+    if(fields?.amount && fields.amount > product.amount){
+      throw new InvalidSale()
+    }
+
     let status: StatusType = oldSale.status.value
 
     if(fields.status){
@@ -52,12 +56,19 @@ export class UpdateSale {
           status = 'pending'
         case 'processing':
           status = Status.approve(oldSale.status.value).value
+          break
         case 'canceled':
           status = Status.cancel(oldSale.status.value).value
+          break
+
         case 'delivering':
           status = Status.dispatch(oldSale.status.value).value
+          break
+
         case 'delivered':
           status = Status.deliver(oldSale.status.value).value
+          break
+
       }
     }
 
