@@ -9,7 +9,7 @@ import { InvalidSale } from '../error/invalid-sale';
 type CreateSaleUseCaseRequest = Optional<Sale, 'id' | 'profit' | 'createdAt' | 'updatedAt' | 'status'>
 
 interface CreateSaleUseCaseResponse {
-  sale: Sale
+  sale: Sale | null
 }
 
 export class CreateSale {

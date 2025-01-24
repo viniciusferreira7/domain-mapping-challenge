@@ -4,10 +4,54 @@ import { Status, type StatusType } from '@/domain/entities/value-object/status';
 import type { SalesRepository } from '../sales-repository';
 import dayjs from 'dayjs';
 import type { Optional } from '@/core/types/optional';
+import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
+
+interface UpdateSaleParams {
+  saleId: string
+  fields: {
+    name?: string
+    size?: string
+    productId?: string
+    customerId?: string
+    amount?: number
+    profit?: number
+    status?: StatusType
+  }
+}
 
 export class InMemorySalesRepository implements SalesRepository {
 
-  constructor(public sales: Sale[],  public products: Product[]){}
+constructor(public sales: Sale[],  public products: Product[]){}
+
+ async update(params: UpdateSaleParams): Promise<Sale | null> {
+  let updatedSaleIndex = this.sales.findIndex((sale) => sale.id.toString === params.saleId)
+
+  if(updatedSaleIndex >= 0){
+    const updatedSale = this.sales[updatedSaleIndex]
+
+    this.sales[updatedSaleIndex] = new Sale({
+      id: updatedSale.id,
+      name: params.fields.name ?? updatedSale.name,
+      amount: params.fields.amount ?? updatedSale.amount,
+      profit: params.fields.profit ?? updatedSale.profit,
+      productId: params.fields.productId ?? updatedSale.productId,
+      customerId: params.fields.customerId ?? updatedSale.customerId,
+      createdAt: updatedSale.createdAt,
+      status: new Status(params.fields.status ?? updatedSale.status.value),
+      updatedAt: new Date(),
+    })
+
+    return this.sales[updatedSaleIndex]
+  }
+
+  return null
+  }
+
+  async getById(id: UniqueEntityId): Promise<Sale | null> {
+    const sale = this.sales.find((item) => item.id.toString === id.toString)
+
+    return sale ?? null
+  }
 
  async create(params: Optional<Sale, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Promise<Sale> {
     const sale =  Sale.create({
