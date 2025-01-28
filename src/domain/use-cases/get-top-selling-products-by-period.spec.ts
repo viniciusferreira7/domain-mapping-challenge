@@ -150,7 +150,7 @@ describe("Get top selling products by period", () => {
     vi.useRealTimers()
   })
 
-  it.only("Should be able to get top selling products by period", async () => {
+  it("Should be able to get top selling products by period", async () => {
     const response = await sut.execute({})
 
     expect(response["2000-01-05"]).toEqual(expect.objectContaining(
