@@ -7,7 +7,6 @@ import { ResourceNotFound } from '../error/resource-not-found'
 import { InMemoryProductsRepository } from '../repositories/in-memory/in-memory-products-repository'
 import { InMemorySalesRepository } from '../repositories/in-memory/in-memory-sales-repository'
 import { UpdateSale } from './update-sale'
-import { InvalidStatus } from '../error/invalid-status'
 
 
 let products: Product[] = []
